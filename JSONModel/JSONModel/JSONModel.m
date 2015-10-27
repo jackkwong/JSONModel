@@ -28,6 +28,7 @@
 #import "JSONModelArray.h"
 #import <CocoaLumberjack/DDLogMacros.h>
 
+static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
 #pragma mark - associated objects names
 static const char * kMapperObjectKey;
 static const char * kClassPropertiesKey;
