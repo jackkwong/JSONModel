@@ -250,7 +250,7 @@ static JSONKeyMapper* globalKeyMapper = nil;
         [requiredProperties minusSet:incomingKeys];
         
         //not all required properties are in - invalid input
-        JMLog(@"Incoming data was invalid [%@ initWithDictionary:]. Keys missing: %@", self.class, requiredProperties);
+        DDLogError(@"Incoming data was invalid [%@ initWithDictionary:]. Keys missing: %@", self.class, requiredProperties);
         
         if (err) *err = [JSONModelError errorInvalidDataWithMissingKeys:requiredProperties];
         return NO;
@@ -287,7 +287,7 @@ static JSONKeyMapper* globalKeyMapper = nil;
         
         //convert key name ot model keys, if a mapper is provided
         NSString* jsonKeyPath = (keyMapper||globalKeyMapper) ? [self __mapString:property.name withKeyMapper:keyMapper importing:YES] : property.name;
-        //JMLog(@"keyPath: %@", jsonKeyPath);
+        //DDLogError(@"keyPath: %@", jsonKeyPath);
         
         //general check for data type compliance
         id jsonValue;
@@ -324,7 +324,7 @@ static JSONKeyMapper* globalKeyMapper = nil;
         
         if (isValueOfAllowedType==NO) {
             //type not allowed
-            JMLog(@"Type %@ is not allowed in JSON.", NSStringFromClass(jsonValueClass));
+            DDLogError(@"Type %@ is not allowed in JSON.", NSStringFromClass(jsonValueClass));
             
             if (err) {
 				NSString* msg = [NSString stringWithFormat:@"Type %@ is not allowed in JSON.", NSStringFromClass(jsonValueClass)];
@@ -396,7 +396,7 @@ static JSONKeyMapper* globalKeyMapper = nil;
                 //  ) might or not be the case there's a built in transofrm for it
                 if (property.protocol) {
                     
-                    //JMLog(@"proto: %@", p.protocol);
+                    //DDLogError(@"proto: %@", p.protocol);
                     jsonValue = [self __transform:jsonValue forProperty:property error:err];
                     if (!jsonValue) {
                         if ((err != nil) && (*err == nil)) {
@@ -438,7 +438,7 @@ static JSONKeyMapper* globalKeyMapper = nil;
                     // but did not find any solution, maybe that's the best idea? (hardly)
                     Class sourceClass = [JSONValueTransformer classByResolvingClusterClasses:[jsonValue class]];
                     
-                    //JMLog(@"to type: [%@] from type: [%@] transformer: [%@]", p.type, sourceClass, selectorName);
+                    //DDLogError(@"to type: [%@] from type: [%@] transformer: [%@]", p.type, sourceClass, selectorName);
                     
                     //build a method selector for the property and json object classes
                     NSString* selectorName = [NSString stringWithFormat:@"%@From%@:",
@@ -549,7 +549,7 @@ static JSONKeyMapper* globalKeyMapper = nil;
 //inspects the class, get's a list of the class properties
 -(void)__inspectProperties
 {
-    //JMLog(@"Inspect class: %@", [self class]);
+    //DDLogError(@"Inspect class: %@", [self class]);
     
     NSMutableDictionary* propertyIndex = [NSMutableDictionary dictionary];
     
@@ -560,7 +560,7 @@ static JSONKeyMapper* globalKeyMapper = nil;
     
     // inspect inherited properties up to the JSONModel class
     while (class != [JSONModel class]) {
-        //JMLog(@"inspecting: %@", NSStringFromClass(class));
+        //DDLogError(@"inspecting: %@", NSStringFromClass(class));
         
         unsigned int propertyCount;
         objc_property_t *properties = class_copyPropertyList(class, &propertyCount);
@@ -575,7 +575,7 @@ static JSONKeyMapper* globalKeyMapper = nil;
             const char *propertyName = property_getName(property);
             p.name = @(propertyName);
             
-            //JMLog(@"property: %@", p.name);
+            //DDLogError(@"property: %@", p.name);
             
             //get property attributes
             const char *attrs = property_getAttributes(property);
@@ -595,7 +595,7 @@ static JSONKeyMapper* globalKeyMapper = nil;
             
             scanner = [NSScanner scannerWithString: propertyAttributes];
             
-            //JMLog(@"attr: %@", [NSString stringWithCString:attrs encoding:NSUTF8StringEncoding]);
+            //DDLogError(@"attr: %@", [NSString stringWithCString:attrs encoding:NSUTF8StringEncoding]);
             [scanner scanUpToString:@"T" intoString: nil];
             [scanner scanString:@"T" intoString:nil];
             
@@ -605,7 +605,7 @@ static JSONKeyMapper* globalKeyMapper = nil;
                 [scanner scanUpToCharactersFromSet:[NSCharacterSet characterSetWithCharactersInString:@"\"<"]
                                         intoString:&propertyType];
                 
-                //JMLog(@"type: %@", propertyClassName);
+                //DDLogError(@"type: %@", propertyClassName);
                 p.type = NSClassFromString(propertyType);
                 p.isMutable = ([propertyType rangeOfString:@"Mutable"].location != NSNotFound);
                 p.isStandardJSONType = [allowedJSONTypes containsObject:p.type];
@@ -957,7 +957,7 @@ static JSONKeyMapper* globalKeyMapper = nil;
         NSString* keyPath = (self.__keyMapper||globalKeyMapper) ? [self __mapString:p.name withKeyMapper:self.__keyMapper importing:YES] : p.name;
         value = [self valueForKey: p.name];
         
-        //JMLog(@"toDictionary[%@]->[%@] = '%@'", p.name, keyPath, value);
+        //DDLogError(@"toDictionary[%@]->[%@] = '%@'", p.name, keyPath, value);
 
         if ([keyPath rangeOfString:@"."].location != NSNotFound) {
             //there are sub-keys, introduce dictionaries for them
@@ -1071,7 +1071,7 @@ static JSONKeyMapper* globalKeyMapper = nil;
 	@catch (NSException *exception) {
 		//this should not happen in properly design JSONModel
 		//usually means there was no reverse transformer for a custom property
-		JMLog(@"EXCEPTION: %@", exception.description);
+		DDLogError(@"EXCEPTION: %@", exception.description);
 		return nil;
 	}
 	
@@ -1301,7 +1301,7 @@ static JSONKeyMapper* globalKeyMapper = nil;
     JSONModelError *error = nil;
     self = [self initWithString:json error:&error];
     if (error) {
-        JMLog(@"%@",[error localizedDescription]);
+        DDLogError(@"%@",[error localizedDescription]);
     }
     return self;
 }

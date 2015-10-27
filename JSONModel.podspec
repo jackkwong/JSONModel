@@ -7,13 +7,15 @@ Pod::Spec.new do |s|
   s.license      = { :type => 'MIT', :file => 'LICENSE_jsonmodel.txt' }
   s.author       = { "Marin Todorov" => "touch-code-magazine@underplot.com" }
 
-  s.source       = { :git => "https://github.com/icanzilb/JSONModel.git", :tag => "1.1.2" }
+  s.source       = { :git => "https://github.com/db42/JSONModel.git", :tag => "1.1.2" }
 
   s.ios.deployment_target = '5.0'
   s.osx.deployment_target = '10.7'
 
   s.source_files = 'JSONModel/**/*.{m,h}'
   s.public_header_files = 'JSONModel/**/*.h'
+
+  s.dependency 'CocoaLumberjack', '~> 2.0.0-rc'
 
   s.requires_arc = true
 

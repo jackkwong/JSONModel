@@ -21,12 +21,12 @@
 #import "JSONKeyMapper.h"
 
 /////////////////////////////////////////////////////////////////////////////////////////////
-#if TARGET_IPHONE_SIMULATOR
-#define JMLog( s, ... ) NSLog( @"[%@:%d] %@", [[NSString stringWithUTF8String:__FILE__] \
-lastPathComponent], __LINE__, [NSString stringWithFormat:(s), ##__VA_ARGS__] )
-#else
-#define JMLog( s, ... )
-#endif
+//#if TARGET_IPHONE_SIMULATOR
+//#define DDLogError( s, ... ) DDLogError( @"[%@:%d] %@", [[NSString stringWithUTF8String:__FILE__] \
+//lastPathComponent], __LINE__, [NSString stringWithFormat:(s), ##__VA_ARGS__] )
+//#else
+//#define DDLogError( s, ... )
+//#endif
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 #pragma mark - Property Protocols
