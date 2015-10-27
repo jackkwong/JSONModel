@@ -26,6 +26,7 @@
 #import "JSONModel.h"
 #import "JSONModelClassProperty.h"
 #import "JSONModelArray.h"
+#import <CocoaLumberjack/DDLogMacros.h>
 
 #pragma mark - associated objects names
 static const char * kMapperObjectKey;
