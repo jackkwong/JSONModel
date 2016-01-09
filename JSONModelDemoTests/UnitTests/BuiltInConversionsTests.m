@@ -56,8 +56,8 @@
     
     //TODO: I had to hardcode the float epsilon below, bcz actually [NSNumber floatValue] was returning a bigger deviation than FLT_EPSILON
     // IDEAS?
-    XCTAssertTrue(fabsf([b.numberFromString floatValue]-1230.99)<0.001, @"numberFromString's value is not 1230.99");
-    
+    XCTAssertEqualWithAccuracy([b.numberFromString floatValue], 1230.99, 0.001, @"numberFromString's value is not 1230.99");
+
     XCTAssertTrue([b.importantEvent isKindOfClass:[NSDate class]], @"importantEvent is not an NSDate");
     XCTAssertTrue((long)[b.importantEvent timeIntervalSince1970] == 1353916801, @"importantEvent value was not read properly");
     
@@ -65,6 +65,9 @@
     //https://github.com/icanzilb/JSONModel/pull/60
     XCTAssertNotNil(b.websiteURL, @"URL parsing did return nil");
     XCTAssertNotNil(b.websiteURL.query, @"key1=test");
+
+    // see: https://github.com/icanzilb/JSONModel/pull/119
+    XCTAssertEqualObjects(b.websiteURL.absoluteString, @"http://www.visir.is/jordan-slaer-milljard-af-villunni-sinni/article/2013130709873?key1=test&q=search%20terms");
     
     XCTAssertNotNil(b.timeZone, @"Time zone parsing did return nil");
     XCTAssertEqualObjects([b.timeZone name], @"PST", @"Time zone is not PST");

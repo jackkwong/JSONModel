@@ -12,7 +12,7 @@
 #import "GitHubKeyMapRepoModelDict.h"
 #import "GitHubRepoModelForUSMapper.h"
 #import "ModelForUpperCaseMapper.h"
-
+#import "RenamedPropertyModel.h"
 
 #pragma mark - TestModel class
 @interface TestModel: JSONModel
@@ -235,7 +235,7 @@
     XCTAssertNil(global1.name, @"name got a value when nil expected");
     
     NSDictionary* data = @{@"name":@"NAME IN CAPITALS"};
-    [global1 mergeFromDictionary:data useKeyMapping:NO];
+    [global1 mergeFromDictionary:data useKeyMapping:NO error:nil];
 
     XCTAssertEqualObjects(global1.name, @"NAME IN CAPITALS", @"did not import name property");
     
@@ -245,7 +245,7 @@
                                                                               }]];
     GlobalModel* global2 = [[GlobalModel alloc] init];
     NSDictionary* data2 = @{@"name1":@"NAME IN CAPITALS"};
-    [global2 mergeFromDictionary:data2 useKeyMapping:YES];
+    [global2 mergeFromDictionary:data2 useKeyMapping:YES error:nil];
     
     XCTAssertEqualObjects(global2.name, @"NAME IN CAPITALS", @"did not import name property");
     
@@ -285,6 +285,24 @@
     XCTAssertTrue([toString rangeOfString:@"text3\":\"Marin"].location!=NSNotFound, @"model did not export text3 in string");
     
     [JSONModel setGlobalKeyMapper:nil];
+}
+
+- (void)testExceptionsMapper
+{
+    NSString *jsonString = @"{\"ID\":\"12345\",\"NAME\":\"TEST\"}";
+    RenamedPropertyModel *m = [[RenamedPropertyModel alloc] initWithString:jsonString error:nil];
+    XCTAssertNotNil(m, @"Could not initialize model from string");
+
+    // import
+    XCTAssertEqualObjects(m.identifier, @"12345", @"identifier does not equal '12345'");
+    XCTAssertEqualObjects(m.name, @"TEST", @"name does not equal 'TEST'");
+
+    // export
+    NSDictionary *dict = [m toDictionary];
+    XCTAssertNotNil(dict, @"toDictionary failed");
+
+    XCTAssertEqualObjects(dict[@"ID"], m.identifier, @"ID does not equal '12345'");
+    XCTAssertEqualObjects(dict[@"NAME"], m.name, @"NAME does not equal 'TEST'");
 }
 
 @end
