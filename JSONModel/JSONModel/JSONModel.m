@@ -25,7 +25,6 @@
 
 #import "JSONModel.h"
 #import "JSONModelClassProperty.h"
-#import "JSONModelArray.h"
 #import <CocoaLumberjack/DDLogMacros.h>
 
 static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
