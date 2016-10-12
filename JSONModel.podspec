@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "JSONModel"
-  s.version      = "1.2.3"
+  s.version      = "1.2.4"
   s.summary      = "Magical Data Modelling Framework for JSON. Create rapidly powerful, atomic and smart data model classes."
   s.homepage     = "http://www.jsonmodel.com"
 
@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
   s.source_files = 'JSONModel/**/*.{m,h}'
   s.public_header_files = 'JSONModel/**/*.h'
 
-  s.dependency 'CocoaLumberjack', '~> 2.2'
+  s.dependency 'CocoaLumberjack/Default', '~> 3.0'
 
   s.requires_arc = true
 
