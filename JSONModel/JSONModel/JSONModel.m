@@ -443,7 +443,7 @@ static JSONKeyMapper* globalKeyMapper = nil;
                     
                     //build a method selector for the property and json object classes
                     NSString* selectorName = [NSString stringWithFormat:@"%@From%@:",
-                                              (property.structName? property.structName : property.type), //target name
+                                              ([self safeSelectorPartialFromJSONModelClassProperty:property]), //target name
                                               sourceClass]; //source name
                     SEL selector = NSSelectorFromString(selectorName);
 
@@ -938,6 +938,16 @@ static JSONKeyMapper* globalKeyMapper = nil;
     return [self toJSONDataWithKeys:nil];
 }
 
+-(NSString *)safeSelectorPartialFromJSONModelClassProperty:(JSONModelClassProperty *)p
+{
+    NSString *selectorPartial = [NSString stringWithFormat:@"%@", p.type?p.type:p.structName];
+    if ([selectorPartial rangeOfString:@"."].location != NSNotFound) {
+        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@".*\\." options:NSRegularExpressionCaseInsensitive error:nil];
+        selectorPartial = [regex stringByReplacingMatchesInString:selectorPartial options:0 range:NSMakeRange(0, [selectorPartial length]) withTemplate:@""];
+    }
+    return selectorPartial;
+}
+
 //exports the model as a dictionary of JSON compliant objects
 -(NSDictionary*)toDictionaryWithKeys:(NSArray*)propertyNames
 {
@@ -1016,7 +1026,7 @@ static JSONKeyMapper* globalKeyMapper = nil;
             if (YES) {
 
                 //create selector from the property's class name
-                NSString* selectorName = [NSString stringWithFormat:@"%@From%@:", @"JSONObject", p.type?p.type:p.structName];
+                NSString* selectorName = [NSString stringWithFormat:@"%@From%@:", @"JSONObject", [self safeSelectorPartialFromJSONModelClassProperty:p]];
                 SEL selector = NSSelectorFromString(selectorName);
 
                 BOOL foundCustomTransformer = NO;
